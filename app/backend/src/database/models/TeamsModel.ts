@@ -27,3 +27,5 @@ Teams.init(
     timestamps: false,
   },
 );
+
+export default Teams;
