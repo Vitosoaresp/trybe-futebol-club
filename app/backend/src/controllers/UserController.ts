@@ -19,7 +19,7 @@ export default class UserController {
   ) {
     try {
       const { email, password } = req.body;
-      const { data, message, code } = await UserServices.login(email, password);
+      const { message, code } = await UserServices.login(email, password);
       if (message) {
         return res.status(code).json({ message });
       }
