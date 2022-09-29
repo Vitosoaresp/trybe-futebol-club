@@ -8,20 +8,17 @@ export default class UserServices {
       return { code: 400, message: 'All fields must be filled' };
     }
     const isValidDTO = validateLogin(email, password);
-    if (!isValidDTO) {
-      return { code: 401, message: 'Incorrect email or password' };
-    }
     const getUser = await User.findAll({
       where: { email },
     });
-    if (getUser.length < 1 || !getUser) {
-      return { code: 404, message: 'User not found!' };
+    if (!isValidDTO || getUser.length < 1) {
+      return { code: 401, message: 'Incorrect email or password' };
     }
     const checkPass = BcryptService.compare(getUser[0].password, password);
     if (!checkPass) {
       return { code: 401, message: 'Incorrect email or password' };
     }
-    return { code: 201, data: true };
+    return { code: 200, data: true };
   }
   static async getUserByEmail(email: string) {
     const user = await User.findAll({
