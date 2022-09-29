@@ -84,7 +84,7 @@ describe('/LOGIN', () => {
         .post('/login')
         .send({ ...userLoginSend, password: 'senhaqualqur' });
       expect(result.status).to.be.equal(401);
-      // expect(result.body).to.have.key('message');
+      expect(result.body).to.have.key('message');
       expect(result.body).to.have.equal({
         message: 'Incorrect email or password',
       });
