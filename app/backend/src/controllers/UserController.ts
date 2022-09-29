@@ -21,7 +21,7 @@ export default class UserController {
       const { email, password } = req.body;
       const result = await UserServices.login(email, password);
       if (result !== true) {
-        return res.status(result.code).json({ menssage: result.message });
+        return res.status(result.code).json({ message: result.message });
       }
       const token = UserController.tokenHelper.createToken({ email });
       return res.status(201).json({ token });
