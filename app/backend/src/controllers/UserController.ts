@@ -37,7 +37,9 @@ export default class UserController {
       if (!token) {
         return res.status(401).json({ message: 'Token not found' });
       }
-      const getInfo = this.tokenHelper.verifyToken(token) as JwtPayload;
+      const getInfo = UserController.tokenHelper.verifyToken(
+        token,
+      ) as JwtPayload;
       const getUser = await UserServices.getUserByEmail(getInfo.email);
       res.status(200).json({ role: getUser.role });
     } catch (error) {
