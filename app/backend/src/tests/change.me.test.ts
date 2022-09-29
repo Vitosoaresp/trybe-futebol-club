@@ -12,14 +12,13 @@ import { Response } from 'superagent';
 chai.use(chaiHttp);
 
 const { expect } = chai;
-
 describe('/LOGIN', () => {
   describe('caso passe email e password validos', () => {
-    before(async () => {
+    beforeEach(async () => {
       sinon.stub(UserModel, 'findAll').resolves([userMock] as UserModel[]);
     });
 
-    after(() => {
+    afterEach(() => {
       (UserModel.findAll as sinon.SinonStub).restore();
     });
 
@@ -34,11 +33,11 @@ describe('/LOGIN', () => {
   });
 
   describe('caso passem email ou password invalidos', () => {
-    before(async () => {
+    beforeEach(async () => {
       sinon.stub(UserModel, 'findAll').resolves([userMock] as UserModel[]);
     });
 
-    after(() => {
+    afterEach(() => {
       (UserModel.findAll as sinon.SinonStub).restore();
     });
 
