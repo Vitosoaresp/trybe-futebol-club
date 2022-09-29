@@ -48,6 +48,10 @@ Matches.init(
       type: INTEGER,
       allowNull: false,
     },
+    inProgress: {
+      type: BOOLEAN,
+      allowNull: false,
+    },
   },
   {
     // ... Outras configs
