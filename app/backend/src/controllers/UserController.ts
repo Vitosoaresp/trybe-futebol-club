@@ -1,14 +1,10 @@
 import { Request, Response } from 'express';
+import { JwtPayload } from 'jsonwebtoken';
 
 import { IUserDTOLogin } from '../interfaces/IUserServices';
 import UserServices from '../services/user/UserServices';
 import TokenHelper from '../helpers/tokenHelper';
-import { JwtPayload } from 'jsonwebtoken';
-
-const INTERNAL_ERROR = {
-  code: 500,
-  message: 'Internal Error!',
-};
+import INTERNAL_ERROR from '../helpers/errorHelper';
 
 export default class UserController {
   static tokenHelper = new TokenHelper();
