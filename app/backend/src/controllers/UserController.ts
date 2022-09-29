@@ -19,12 +19,12 @@ export default class UserController {
   ) {
     try {
       const { email, password } = req.body;
-      const result = await UserServices.login(email, password);
-      if (result !== true) {
-        return res.status(result.code).json({ message: result.message });
+      const { data, message, code } = await UserServices.login(email, password);
+      if (message) {
+        return res.status(code).json({ message });
       }
       const token = UserController.tokenHelper.createToken({ email });
-      return res.status(201).json({ token });
+      return res.status(code).json({ token });
     } catch (error) {
       console.log(error);
       res.status(INTERNAL_ERROR.code).json({ message: INTERNAL_ERROR.message });
