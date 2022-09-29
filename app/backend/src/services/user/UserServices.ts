@@ -23,4 +23,10 @@ export default class UserServices {
     }
     return true;
   }
+  static async getUserByEmail(email: string) {
+    const user = await User.findAll({
+      where: { email },
+    });
+    return user[0];
+  }
 }
