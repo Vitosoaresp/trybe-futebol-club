@@ -29,4 +29,19 @@ describe('/GET teams', () => {
       expect(response.body).to.have.equals(teamsMock);
     });
   });
+  describe('Find team by PK', () => {
+    beforeEach(async () => {
+      sinon.stub(TeamsModel, 'findByPk').resolves(teamMock as TeamsModel);
+    });
+
+    afterEach(() => {
+      (TeamsModel.findByPk as sinon.SinonStub).restore();
+    });
+
+    it('should return a specific team', async () => {
+      const response: Response = await chai.request(app).post('/login/1');
+      expect(response.status).to.equal(200);
+      expect(response.body).to.have.equal(teamMock);
+    });
+  });
 });

@@ -1,8 +1,5 @@
 import Teams from '../../database/models/TeamsModel';
-import {
-  ITeamsServices,
-  ITeamsServicesReturn,
-} from '../../interfaces/ITeamsServices';
+import { ITeamsServicesReturn } from '../../interfaces/ITeamsServices';
 
 export default class GetAllTeams {
   static async getTeams(): Promise<ITeamsServicesReturn> {
