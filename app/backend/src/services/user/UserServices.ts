@@ -21,7 +21,7 @@ export default class UserServices {
     if (!checkPass) {
       return { code: 401, message: 'Incorrect email or password' };
     }
-    return true;
+    return { code: 201, data: true };
   }
   static async getUserByEmail(email: string) {
     const user = await User.findAll({
