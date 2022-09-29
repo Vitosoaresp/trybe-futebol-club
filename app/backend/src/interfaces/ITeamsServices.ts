@@ -6,5 +6,5 @@ export interface ITeamsServices {
 export interface ITeamsServicesReturn {
   code: number;
   message?: string;
-  data?: ITeamsServices[];
+  data?: ITeamsServices[] | ITeamsServices;
 }
