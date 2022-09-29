@@ -15,7 +15,7 @@ export default class TokenHelper {
       const token = Jwt.sign(payload, TokenHelper.secret);
       return token;
     }
-    throw new Error('Não foi possivel ler o token');
+    throw new Error('Não foi possivel ler a secret');
   }
 
   verifyToken = (token: string) => {
@@ -23,5 +23,6 @@ export default class TokenHelper {
       const check = Jwt.verify(token, TokenHelper.secret);
       return check;
     }
+    throw new Error('Não foi possivel ler a secret');
   };
 }
