@@ -24,9 +24,12 @@ describe('/GET teams', () => {
     });
 
     it('should return all times', async () => {
-      const response: Response = await chai.request(app).post('/login');
+      const response: Response = await chai.request(app).get('/teams').send();
       expect(response.status).to.equal(200);
-      expect(response.body).to.have.equals(teamsMock);
+      expect(response.body).to.be.a('array');
+      expect(response.body[0]).to.have.keys('id', 'teamName');
+      expect(response.body[0].id).to.eql(teamsMock[0].id);
+      expect(response.body[0].teamName).to.eql(teamsMock[0].teamName);
     });
   });
   describe('Find team by PK', () => {
@@ -39,9 +42,30 @@ describe('/GET teams', () => {
     });
 
     it('should return a specific team', async () => {
-      const response: Response = await chai.request(app).post('/login/1');
+      const response: Response = await chai.request(app).get('/teams/1').send();
       expect(response.status).to.equal(200);
-      expect(response.body).to.have.equal(teamMock);
+      expect(response.body).to.have.keys('id', 'teamName');
+      expect(response.body.id).to.eql(teamMock.id);
+      expect(response.body.teamName).to.eql(teamMock.teamName);
+    });
+  });
+  describe('case the team id does not exist', () => {
+    beforeEach(async () => {
+      sinon.stub(TeamsModel, 'findByPk').resolves();
+    });
+
+    afterEach(() => {
+      (TeamsModel.findByPk as sinon.SinonStub).restore();
+    });
+
+    it('should return array an empty array', async () => {
+      const response: Response = await chai
+        .request(app)
+        .get('/teams/9999')
+        .send();
+      expect(response.status).to.equal(200);
+      expect(response.body).to.be.a('array');
+      expect(response.body).to.have.length(0);
     });
   });
 });
