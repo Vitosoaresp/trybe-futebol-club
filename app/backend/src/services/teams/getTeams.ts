@@ -6,6 +6,7 @@ export default class GetTeams {
     const teams = await Teams.findAll();
     return { code: 200, data: teams };
   }
+
   static async getByPK(id: string): Promise<ITeamsServicesReturn> {
     const team = await Teams.findByPk(id);
     if (!team) {

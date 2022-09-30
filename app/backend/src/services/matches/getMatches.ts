@@ -20,6 +20,7 @@ export default class getMatches {
     });
     return { code: 200, data: matches };
   }
+
   static async getByInProgress(query: string): Promise<IMatchesReturn> {
     const matches = await Matches.findAll({
       where: { inProgress: query === 'true' },

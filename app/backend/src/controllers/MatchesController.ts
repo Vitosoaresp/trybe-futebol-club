@@ -22,26 +22,18 @@ export default class MatchesController {
       res.status(INTERNAL_ERROR.code).json(INTERNAL_ERROR.message);
     }
   }
+
   static async create(
     req: Request<unknown, unknown, IMatchesDTO>,
     res: Response,
   ) {
     try {
-      const { awayTeam, awayTeamGoals, homeTeam, homeTeamGoals, inProgress } =
-        req.body;
-      const { code, data, message } = await createMatchesService.create({
-        awayTeam,
-        awayTeamGoals,
-        homeTeam,
-        homeTeamGoals,
-        inProgress,
-      });
-      if (message) {
-        return res.status(code).json(message);
-      }
+      const { code, data, message } = await createMatchesService.create(
+        req.body,
+      );
+      if (message) return res.status(code).json(message);
       return res.status(code).json(data);
     } catch (error) {
-      console.log(error);
       res.status(INTERNAL_ERROR.code).json(INTERNAL_ERROR.message);
     }
   }
