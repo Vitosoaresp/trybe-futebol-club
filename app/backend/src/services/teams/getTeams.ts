@@ -9,7 +9,7 @@ export default class GetTeams {
   static async getByPK(id: string): Promise<ITeamsServicesReturn> {
     const team = await Teams.findByPk(id);
     if (!team) {
-      return { code: 200, data: [] };
+      return { code: 200 };
     }
     return { code: 200, data: team };
   }
