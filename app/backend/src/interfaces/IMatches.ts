@@ -26,3 +26,8 @@ export interface IMatchesDTO {
   awayTeamGoals: number;
   inProgress: boolean;
 }
+
+export interface IMatchesUpdateGoals {
+  homeTeamGoals: string;
+  awayTeamGoals: string;
+}
