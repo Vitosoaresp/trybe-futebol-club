@@ -19,6 +19,7 @@ export default class TeamsController {
     try {
       const { id } = req.params;
       const { data, code } = await GetTeamsService.getByPK(id);
+      if (!data) return res.status(code).json([]);
       return res.status(code).json(data);
     } catch (error) {
       console.log(error);
