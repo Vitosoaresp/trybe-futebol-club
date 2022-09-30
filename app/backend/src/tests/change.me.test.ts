@@ -24,8 +24,6 @@ describe('/LOGIN', () => {
       (UserModel.findAll as sinon.SinonStub).restore();
     });
 
-    const tokenHelper = new TokenHelper();
-
     it('Deve fazer login com sucesso e retornar um token', async () => {
       const result: Response = await chai
         .request(app)
