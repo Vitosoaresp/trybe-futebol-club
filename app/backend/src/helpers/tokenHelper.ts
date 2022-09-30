@@ -8,21 +8,15 @@ interface IPayload {
 }
 
 export default class TokenHelper {
-  private static secret = process.env.JWT_SECRET;
+  private static secret = process.env.JWT_SECRET as string;
 
   createToken(payload: IPayload): string {
-    if (TokenHelper.secret) {
-      const token = Jwt.sign(payload, TokenHelper.secret);
-      return token;
-    }
-    throw new Error('Não foi possivel ler a secret');
+    const token = Jwt.sign(payload, TokenHelper.secret);
+    return token;
   }
 
   verifyToken = (token: string) => {
-    if (TokenHelper.secret) {
-      const check = Jwt.verify(token, TokenHelper.secret);
-      return check;
-    }
-    throw new Error('Não foi possivel ler a secret');
+    const check = Jwt.verify(token, TokenHelper.secret);
+    return check;
   };
 }
