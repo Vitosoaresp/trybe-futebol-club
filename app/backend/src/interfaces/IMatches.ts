@@ -18,3 +18,11 @@ export interface IMatchesReturn {
   message?: string;
   data?: IMatches[] | IMatches;
 }
+
+export interface IMatchesDTO {
+  homeTeam: number;
+  homeTeamGoals: number;
+  awayTeam: number;
+  awayTeamGoals: number;
+  inProgress: boolean;
+}
