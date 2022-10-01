@@ -1,20 +1,23 @@
 import * as sinon from 'sinon';
 import * as chai from 'chai';
+import * as Jwt from 'jsonwebtoken';
 // @ts-ignore
 import chaiHttp = require('chai-http');
 
 import { app } from '../app';
 import MatchesModel from '../database/models/MatchesModel';
 import TeamsModel from '../database/models/TeamsModel';
+import User from '../database/models/UserModel';
 
 import matchesMock from './mocks/Matches';
 import matchesFinishedMock from './mocks/MatchesOnlyFinished';
 import matchesInProgress from './mocks/MatchesInProgress';
 import { newMatchesDTO, newMatchesInProgressMock } from './mocks/CreateMatches';
+import { userLoginSend, userMock } from './mocks/User';
+import { teamsMock } from './mocks/Teams';
 
 import { Response } from 'superagent';
 import { IMatches } from '../interfaces/IMatches';
-import { teamsMock } from './mocks/Teams';
 
 chai.use(chaiHttp);
 
@@ -91,6 +94,20 @@ describe('/GET matches', () => {
       });
     });
   });
+  describe('there is an internal problem', () => {
+    beforeEach(async () => {
+      sinon.stub(MatchesModel, 'findAll').rejects();
+    });
+
+    afterEach(() => {
+      (MatchesModel.findAll as sinon.SinonStub).restore();
+    });
+
+    it('Should return "Internal Error!"', async () => {
+      const response = await chai.request(app).get('/matches').send();
+      expect(response.status).to.equal(500);
+    });
+  });
 });
 
 describe('/POST', () => {
@@ -105,20 +122,73 @@ describe('/POST', () => {
         .resolves(teamsMock[0] as TeamsModel)
         .onSecondCall()
         .resolves(teamsMock[1] as TeamsModel);
+      sinon.stub(User, 'findAll').resolves([userMock] as User[]);
+      sinon.stub(Jwt, 'verify').returns();
     });
 
     afterEach(() => {
       (MatchesModel.create as sinon.SinonStub).restore();
       (TeamsModel.findByPk as sinon.SinonStub).restore();
+      (User.findAll as sinon.SinonStub).restore();
+      (Jwt.verify as sinon.SinonStub).restore();
     });
 
     it('should return new match', async () => {
+      const login = await chai.request(app).post('/login').send(userLoginSend);
+      const { token } = login.body;
+
       const response: Response = await chai
         .request(app)
         .post('/matches')
+        .auth(token, { type: 'bearer' })
         .send(newMatchesDTO);
       expect(response.status).to.equal(201);
       expect(response.body).to.have.keys(Object.keys(newMatchesInProgressMock));
     });
   });
+
+  describe('there is an internal problem when trying to create a match', () => {
+    beforeEach(async () => {
+      sinon.stub(MatchesModel, 'create').rejects();
+      sinon.stub(TeamsModel, 'findByPk').rejects();
+      sinon.stub(Jwt, 'verify').resolves();
+    });
+
+    afterEach(() => {
+      (MatchesModel.create as sinon.SinonStub).restore();
+      (TeamsModel.findByPk as sinon.SinonStub).restore();
+      (Jwt.verify as sinon.SinonStub).restore();
+    });
+
+    it('Should return "Internal Error!"', async () => {
+      const response = await chai
+        .request(app)
+        .post('/matches')
+        .auth('fakeToken', { type: 'bearer' })
+        .send(newMatchesDTO);
+      expect(response.status).to.equal(500);
+    });
+  });
+  describe("case don't pass a token", () => {
+    beforeEach(async () => {
+      sinon.stub(Jwt, 'verify').rejects();
+    });
+
+    afterEach(() => {
+      (Jwt.verify as sinon.SinonStub).restore();
+    });
+
+    it('Should return "Token must be a valid token"', async () => {
+      const response = await chai
+        .request(app)
+        .post('/matches')
+        .send(newMatchesDTO);
+      expect(response.status).to.equal(401);
+      expect(response.body.message).to.equal('Token must be a valid token');
+    });
+  });
+});
+
+describe('/PATCH', () => {
+  describe('update inProgress', () => {});
 });

@@ -32,6 +32,22 @@ describe('/GET teams', () => {
       expect(response.body[0].teamName).to.eql(teamsMock[0].teamName);
     });
   });
+
+  describe('there is an internal problem', () => {
+    beforeEach(async () => {
+      sinon.stub(TeamsModel, 'findAll').rejects();
+    });
+
+    afterEach(() => {
+      (TeamsModel.findAll as sinon.SinonStub).restore();
+    });
+
+    it('Should return "Internal Error!"', async () => {
+      const response = await chai.request(app).get('/teams').send();
+      expect(response.status).to.equal(500);
+    });
+  });
+
   describe('Find team by PK', () => {
     beforeEach(async () => {
       sinon.stub(TeamsModel, 'findByPk').resolves(teamMock as TeamsModel);
@@ -66,6 +82,20 @@ describe('/GET teams', () => {
       expect(response.status).to.equal(200);
       expect(response.body).to.be.a('array');
       expect(response.body).to.have.length(0);
+    });
+  });
+  describe('there is an internal problem', () => {
+    beforeEach(async () => {
+      sinon.stub(TeamsModel, 'findByPk').rejects();
+    });
+
+    afterEach(() => {
+      (TeamsModel.findByPk as sinon.SinonStub).restore();
+    });
+
+    it('Should return "Internal Error!"', async () => {
+      const response = await chai.request(app).get('/teams/1').send();
+      expect(response.status).to.equal(500);
     });
   });
 });
