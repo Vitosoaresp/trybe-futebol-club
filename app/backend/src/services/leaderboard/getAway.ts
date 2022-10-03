@@ -13,7 +13,7 @@ export default class LeaderBoardAway {
     return { code: 200, data: generateTable };
   }
 
-  static generateTable({ teamName, away }: any) {
+  static generateTable({ teamName, away }: any): ILeaderBoard {
     const { goalsBalance, goalsFavor, goalsOwn } =
       LeaderBoardAway.sumGoals(away);
     const { totalDraws, totalLosses, totalPoints, totalVictories } =
