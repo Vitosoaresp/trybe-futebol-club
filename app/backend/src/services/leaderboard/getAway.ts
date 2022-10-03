@@ -1,6 +1,7 @@
 import TeamsModel from '../../database/models/TeamsModel';
 import MatchesModel from '../../database/models/MatchesModel';
-import { ILeaderBoard, IMatch, IMatches } from '../../interfaces/IMatches';
+import { IMatch, IMatches } from '../../interfaces/IMatches';
+import { ILeaderBoard } from '../../interfaces/ILeaderBoard';
 
 export default class LeaderBoardAway {
   static async getAway() {
