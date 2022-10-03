@@ -3,33 +3,36 @@ import TeamsModel from '../../database/models/TeamsModel';
 import MatchesModel from '../../database/models/MatchesModel';
 import { ILeaderBoard, IMatch, IMatches } from '../../interfaces/IMatches';
 
-export default class GetLeaderBoard {
+export default class LeaderBoardHome {
   static async getHome() {
     const team = await TeamsModel.findAll({
       include: [{ model: MatchesModel, as: 'home', where: { inProgress: 0 } }],
     });
-    const generateTable = team.map(({ teamName, home }: any) => {
-      const { goalsBalance, goalsFavor, goalsOwn } = this.sumGoals(home);
-      const { totalDraws, totalLosses, totalPoints, totalVictories } =
-        this.matchStatistics(home);
-      const efficiency = Number(
-        ((totalPoints / (home.length * 3)) * 100).toFixed(2),
-      );
-      return {
-        name: teamName,
-        totalPoints,
-        totalGames: home.length,
-        totalVictories,
-        totalDraws,
-        totalLosses,
-        goalsFavor,
-        goalsOwn,
-        goalsBalance,
-        efficiency,
-      };
-    });
+    const generateTable = team.map(this.generateTable);
     this.sortLeaderBoard(generateTable);
     return { code: 200, data: generateTable };
+  }
+
+  static generateTable({ teamName, home }: any) {
+    const { goalsBalance, goalsFavor, goalsOwn } =
+      LeaderBoardHome.sumGoals(home);
+    const { totalDraws, totalLosses, totalPoints, totalVictories } =
+      LeaderBoardHome.matchStatistics(home);
+    const efficiency = Number(
+      ((totalPoints / (home.length * 3)) * 100).toFixed(2),
+    );
+    return {
+      name: teamName,
+      totalPoints,
+      totalGames: home.length,
+      totalVictories,
+      totalDraws,
+      totalLosses,
+      goalsFavor,
+      goalsOwn,
+      goalsBalance,
+      efficiency,
+    };
   }
 
   static sortLeaderBoard(leaderBoard: ILeaderBoard[]) {
