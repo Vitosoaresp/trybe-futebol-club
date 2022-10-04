@@ -14,7 +14,6 @@ export default class Auth {
       Auth.tokenHelper.verifyToken(token);
       next();
     } catch (error) {
-      console.log(error);
       res.status(401).json({ message: 'Token must be a valid token' });
     }
   }

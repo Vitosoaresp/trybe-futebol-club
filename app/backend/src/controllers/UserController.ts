@@ -22,7 +22,6 @@ export default class UserController {
       const token = UserController.tokenHelper.createToken({ email });
       return res.status(code).json({ token });
     } catch (error) {
-      console.log(error);
       res.status(INTERNAL_ERROR.code).json({ message: INTERNAL_ERROR.message });
     }
   }

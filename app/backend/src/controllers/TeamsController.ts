@@ -10,7 +10,6 @@ export default class TeamsController {
       const { code, data } = await GetTeamsService.getAll();
       return res.status(code).json(data);
     } catch (error) {
-      console.log(error);
       return res.status(INTERNAL_ERROR.code).json(INTERNAL_ERROR.message);
     }
   }
@@ -22,7 +21,6 @@ export default class TeamsController {
       if (!data) return res.status(code).json([]);
       return res.status(code).json(data);
     } catch (error) {
-      console.log(error);
       return res.status(INTERNAL_ERROR.code).json(INTERNAL_ERROR.message);
     }
   }

@@ -20,7 +20,6 @@ export default class MatchesController {
       const { code, data } = await getMatchesService.getAll();
       return res.status(code).json(data);
     } catch (error) {
-      console.log(error);
       res.status(INTERNAL_ERROR.code).json(INTERNAL_ERROR.message);
     }
   }
