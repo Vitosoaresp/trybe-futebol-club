@@ -11,7 +11,6 @@ export default class LeaderBoardController {
       const { code, data } = await LeaderBoardHome.getHome();
       res.status(code).json(data);
     } catch (error) {
-      console.log(error);
       res.status(INTERNAL_ERROR.code).json(INTERNAL_ERROR.message);
     }
   }
@@ -21,7 +20,6 @@ export default class LeaderBoardController {
       const { code, data } = await LeaderBoardAway.getAway();
       res.status(code).json(data);
     } catch (error) {
-      console.log(error);
       res.status(INTERNAL_ERROR.code).json(INTERNAL_ERROR.message);
     }
   }
@@ -31,7 +29,6 @@ export default class LeaderBoardController {
       const { code, data } = await LeaderBoard.getLeaderBoard();
       return res.status(code).json(data);
     } catch (error) {
-      console.log(error);
       res.status(INTERNAL_ERROR.code).json(INTERNAL_ERROR.message);
     }
   }
