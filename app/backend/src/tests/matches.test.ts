@@ -147,7 +147,7 @@ describe('/POST', () => {
     });
   });
 
-  describe('there is an internal problem when trying to create a match', () => {
+  describe('in case there is an internal problem when trying to create a match', () => {
     beforeEach(async () => {
       sinon.stub(MatchesModel, 'create').rejects();
       sinon.stub(TeamsModel, 'findByPk').rejects();
@@ -169,6 +169,7 @@ describe('/POST', () => {
       expect(response.status).to.equal(500);
     });
   });
+
   describe("case don't pass a token", () => {
     beforeEach(async () => {
       sinon.stub(Jwt, 'verify').rejects();
@@ -187,8 +188,147 @@ describe('/POST', () => {
       expect(response.body.message).to.equal('Token must be a valid token');
     });
   });
+
+  describe('case pass a token invalid', () => {
+    it('Should return "Token must be a valid token"', async () => {
+      const response = await chai
+        .request(app)
+        .post('/matches')
+        .auth('invalid', { type: 'bearer' })
+        .send();
+      expect(response.status).to.equal(401);
+      expect(response.body.message).to.equal('Token must be a valid token');
+    });
+  });
+
+  describe('if you try to create a match with the same teams', () => {
+    beforeEach(async () => {
+      sinon.stub(Jwt, 'verify').returns();
+    });
+
+    afterEach(() => {
+      (Jwt.verify as sinon.SinonStub).restore();
+    });
+
+    it('should return message "It is not possible to create a match with two equal teams"', async () => {
+      const response = await chai
+        .request(app)
+        .post('/matches')
+        .auth('token', { type: 'bearer' })
+        .send({ ...newMatchesDTO, awayTeam: 1 });
+
+      expect(response.status).to.equal(401);
+      expect(response.body).to.have.key('message');
+      expect(response.body.message).to.be.equal(
+        'It is not possible to create a match with two equal teams',
+      );
+    });
+  });
+
+  describe("if you try to create a match with a team that doesn't exist", () => {
+    beforeEach(async () => {
+      sinon.stub(Jwt, 'verify').returns();
+      sinon.stub(TeamsModel, 'findByPk').resolves(undefined);
+    });
+
+    afterEach(() => {
+      (Jwt.verify as sinon.SinonStub).restore();
+      (TeamsModel.findByPk as sinon.SinonStub).restore();
+    });
+
+    it('should return message "There is no team with such id!"', async () => {
+      const response = await chai
+        .request(app)
+        .post('/matches')
+        .auth('token', { type: 'bearer' })
+        .send({ ...newMatchesDTO, awayTeam: 99999 });
+
+      expect(response.status).to.equal(404);
+      expect(response.body).to.have.key('message');
+      expect(response.body.message).to.be.equal(
+        'There is no team with such id!',
+      );
+    });
+  });
 });
 
 describe('/PATCH', () => {
-  describe('update inProgress', () => {});
+  const awayTeamGoals = 1;
+  const homeTeamGoals = 2;
+
+  describe('update inProgress to false', () => {
+    beforeEach(async () => {
+      sinon.stub(MatchesModel, 'update').resolves();
+    });
+
+    afterEach(() => {
+      (MatchesModel.update as sinon.SinonStub).restore();
+    });
+
+    it('Should return message "Finished"', async () => {
+      const response = await chai
+        .request(app)
+        .patch('/matches/2/finish')
+        .send();
+      expect(response.status).to.equal(200);
+      expect(response.body).to.be.have.key('message');
+      expect(response.body.message).to.equal('Finished');
+    });
+  });
+
+  describe('in case there is an internal problem updating a match in progress to false', () => {
+    beforeEach(async () => {
+      sinon.stub(MatchesModel, 'update').rejects();
+    });
+
+    afterEach(() => {
+      (MatchesModel.update as sinon.SinonStub).restore();
+    });
+
+    it('Should return code 500', async () => {
+      const response = await chai
+        .request(app)
+        .patch('/matches/2/finish')
+        .send();
+      expect(response.status).to.equal(500);
+    });
+  });
+
+  describe('update goals', () => {
+    beforeEach(async () => {
+      sinon.stub(MatchesModel, 'update').resolves();
+    });
+
+    afterEach(() => {
+      (MatchesModel.update as sinon.SinonStub).restore();
+    });
+
+    it('Should return message "Updated goals"', async () => {
+      const response = await chai
+        .request(app)
+        .patch('/matches/2')
+        .send({ awayTeamGoals, homeTeamGoals });
+      expect(response.status).to.equal(200);
+      expect(response.body).to.be.have.key('message');
+      expect(response.body.message).to.equal('Updated goals');
+    });
+  });
+
+  describe('in case there is an internal problem when updating match goals', () => {
+    beforeEach(async () => {
+      sinon.stub(MatchesModel, 'update').rejects();
+    });
+
+    afterEach(() => {
+      (MatchesModel.update as sinon.SinonStub).restore();
+    });
+
+    it('Should return code 500', async () => {
+      const response = await chai
+        .request(app)
+        .patch('/matches/2')
+        .send({ awayTeamGoals, homeTeamGoals });
+      expect(response.status).to.equal(500);
+    });
+  });
 });
