@@ -43,7 +43,7 @@ describe('/LOGIN', () => {
       (UserModel.findAll as sinon.SinonStub).restore();
     });
 
-    it('se email não for passado', async () => {
+    it('se email não for passado, deve retorar a mensagem "All fields must be filled"', async () => {
       const result: Response = await chai
         .request(app)
         .post('/login')
@@ -53,7 +53,7 @@ describe('/LOGIN', () => {
       expect(result.body.message).to.have.eql('All fields must be filled');
     });
 
-    it('se password não for passado', async () => {
+    it('se password não for passado, deve retorar a mensagem "All fields must be filled"', async () => {
       const result: Response = await chai
         .request(app)
         .post('/login')
@@ -63,7 +63,7 @@ describe('/LOGIN', () => {
       expect(result.body.message).to.have.eql('All fields must be filled');
     });
 
-    it('Caso o email não seja valido', async () => {
+    it('Caso o email não seja valido, deve retorar a mensagem "Incorrect email or password"', async () => {
       const result: Response = await chai
         .request(app)
         .post('/login')
@@ -73,7 +73,7 @@ describe('/LOGIN', () => {
       expect(result.body.message).to.have.equals('Incorrect email or password');
     });
 
-    it('Caso a senha esteja incorreta', async () => {
+    it('Caso a senha esteja incorreta, deve retorar a mensagem "Incorrect email or password"', async () => {
       const result: Response = await chai
         .request(app)
         .post('/login')
@@ -92,7 +92,7 @@ describe('/LOGIN', () => {
       (UserModel.findAll as sinon.SinonStub).restore();
     });
 
-    it('Deve retornar "Internal Error!"', async () => {
+    it('Deve retornar status code 500', async () => {
       const response = await chai
         .request(app)
         .post('/login')

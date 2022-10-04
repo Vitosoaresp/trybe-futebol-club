@@ -110,7 +110,7 @@ describe('/GET matches', () => {
   });
 });
 
-describe('/POST', () => {
+describe('/POST matches', () => {
   describe('Sucess create match', () => {
     beforeEach(async () => {
       sinon
@@ -252,7 +252,7 @@ describe('/POST', () => {
   });
 });
 
-describe('/PATCH', () => {
+describe('/PATCH matches', () => {
   const awayTeamGoals = 1;
   const homeTeamGoals = 2;
 
